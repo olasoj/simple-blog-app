@@ -25,8 +25,6 @@ Olasoji Ige works at Paga as a software engineer. He holds a Bachelor of Science
 
 - Users can log in to delete a blog post if they are the authors of the post.
 
-- Users can withdraw if the account balance after deducting the withdrawn amount from the current balance is at least $500, the withdrawal amount is larger than $1.00, and the account exists.
-
 - Users can create an account and receive a unique account id after signing up. When registering, the user must provide an account name that does not already exist on the platform.
 
 - The username and password are used to authenticate the user, which results in the user receiving an access token if successful.
