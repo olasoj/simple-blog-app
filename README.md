@@ -54,7 +54,7 @@ Go to the project directory
 Start the simple-blog-app
 
 ```bash
-    mvn spring-boot:run
+    ./gradlew bootRun
 ```
 
 ## Documentation
