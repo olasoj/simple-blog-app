@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Component
 public class DefaultBlogService implements BlogService {
+    private static final String BLOG_USER_PRINCIPAL_CANNOT_BE_NULL = "BlogUserPrincipal cannot be null";
     private final BlogRepository blogRepository;
 
     public DefaultBlogService() {
@@ -23,7 +24,7 @@ public class DefaultBlogService implements BlogService {
     @Override
     public CreateBlogPostResult createBlogPost(CreateBlogPostRequest createBlogPostRequest, BlogUserPrincipal blogUserPrincipal) {
         Assert.notNull(createBlogPostRequest, "CreateBlogPostRequest cannot be null");
-        Assert.notNull(blogUserPrincipal, "BlogUserPrincipal cannot be null");
+        Assert.notNull(blogUserPrincipal, BLOG_USER_PRINCIPAL_CANNOT_BE_NULL);
 
         Blog blog = Blog.builder()
                 .title(createBlogPostRequest.title())
@@ -39,12 +40,9 @@ public class DefaultBlogService implements BlogService {
     public EditBlogPostResult editBlogPost(String blogId, EditBlogPostRequest editBlogPostRequest, BlogUserPrincipal blogUserPrincipal) {
         Assert.notNull(blogId, "BlogId cannot be null");
         Assert.notNull(editBlogPostRequest, "EditBlogPostRequest cannot be null");
-        Assert.notNull(blogUserPrincipal, "BlogUserPrincipal cannot be null");
+        Assert.notNull(blogUserPrincipal, BLOG_USER_PRINCIPAL_CANNOT_BE_NULL);
 
-        ResponseStatusException responseStatusException = new ResponseStatusException(HttpStatusCode.valueOf(404), "Blog post not found");
-
-        Blog blog = blogRepository.findBlogTitle(blogId)
-                .orElseThrow(() -> responseStatusException);
+        Blog blog = validateBlogPostChange(blogId, blogUserPrincipal);
 
         blog.setTitle(editBlogPostRequest.title());
         blog.setBody(editBlogPostRequest.body());
@@ -53,8 +51,25 @@ public class DefaultBlogService implements BlogService {
         return new EditBlogPostResult(blog);
     }
 
+    private Blog validateBlogPostChange(String blogId, BlogUserPrincipal blogUserPrincipal) {
+
+        ResponseStatusException responseStatusException = new ResponseStatusException(HttpStatusCode.valueOf(404), "Blog post not found");
+
+        Blog blog = blogRepository.findBlogTitle(blogId)
+                .orElseThrow(() -> responseStatusException);
+
+        if (!blog.getAuthor().getUserId().equals(blogUserPrincipal.user().getUserId()))
+            throw new ResponseStatusException(HttpStatusCode.valueOf(403), "You do not have write permission to this resource");
+
+        return blog;
+    }
+
     @Override
-    public DeleteBlogPostResult deleteBlogPost(String blogId) {
+    public DeleteBlogPostResult deleteBlogPost(String blogId, BlogUserPrincipal blogUserPrincipal) {
+        Assert.notNull(blogUserPrincipal, BLOG_USER_PRINCIPAL_CANNOT_BE_NULL);
+
+        validateBlogPostChange(blogId, blogUserPrincipal);
+
         blogRepository.deleteBlogTitle(blogId);
 
         return new DeleteBlogPostResult();

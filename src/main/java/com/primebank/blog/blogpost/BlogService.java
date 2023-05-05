@@ -14,7 +14,7 @@ public interface BlogService {
 
     EditBlogPostResult editBlogPost(String blogId, EditBlogPostRequest editBlogPostRequest, BlogUserPrincipal blogUserPrincipal);
 
-    DeleteBlogPostResult deleteBlogPost(String blogId);
+    DeleteBlogPostResult deleteBlogPost(String blogId, BlogUserPrincipal blogUserPrincipal);
 
     ReadBlogPostResult readBlogPost();
 }

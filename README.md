@@ -59,9 +59,8 @@ Start the simple-blog-app
 
 ## Documentation
 
-[Documentation](https://banking-api-doc.surge.sh/#account-create-account-post)
-
-[API](https://simple-banking-application.herokuapp.com/)
+[Documentation](https://blog-post-api-doc.surge.sh/)
+- Check the resources/docs folder for other documentation
 
 ## Tech Stack
 

@@ -55,8 +55,8 @@ public class BlogInboundRestController {
     }
 
     @DeleteMapping(value = "/{blogId}")
-    public ResponseEntity<Response<DeleteBlogPostResult>> deleteBlogPost(@PathVariable(value = "blogId") String blogId) {
-        DeleteBlogPostResult deleteBlogPostResult = blogService.deleteBlogPost(blogId);
+    public ResponseEntity<Response<DeleteBlogPostResult>> deleteBlogPost(@PathVariable(value = "blogId") String blogId, @AuthenticationPrincipal BlogUserPrincipal blogUserPrincipal) {
+        DeleteBlogPostResult deleteBlogPostResult = blogService.deleteBlogPost(blogId, blogUserPrincipal);
         Response<DeleteBlogPostResult> response = ResponseAssembler.toResponse(HttpStatus.OK, deleteBlogPostResult);
         return ResponseEntity.ok().body(response);
     }
